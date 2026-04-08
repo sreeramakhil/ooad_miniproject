@@ -1,6 +1,6 @@
 package com.stockflow.controller;
 
-import com.stockflow.model.Product;
+import com.stockflow.model.Product; 
 import com.stockflow.model.ProductForm;
 import com.stockflow.model.Notification;
 import com.stockflow.model.Order;
