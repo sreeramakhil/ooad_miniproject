@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.ui.Model;
 import jakarta.servlet.http.HttpServletRequest;
 
-@ControllerAdvice
+@ControllerAdvice 
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
