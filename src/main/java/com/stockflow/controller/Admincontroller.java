@@ -146,7 +146,7 @@ public class AdminController {
     }
 
     @PostMapping("/admin/notifications/{id}/read")
-    public String markNotificationRead(@PathVariable("id") String id,
+    public String markNotificationRead(@PathVariable("id") String id,  
                                        RedirectAttributes redirectAttributes) {
         notificationRepository.findById(id).ifPresent(n -> {
             n.setRead(true);
