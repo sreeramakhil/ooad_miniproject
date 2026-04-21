@@ -1,0 +1,36 @@
+@startuml
+
+class StoreController
+class AdminController
+class ProductService
+class OrderService
+class CartService
+interface PricingStrategy
+class StandardPricingStrategy
+class OrderFactory
+class NotificationFactory
+class ProductRepository
+class OrderRepository
+class NotificationRepository
+class Product
+class Order
+class OrderItem
+class Notification
+class User
+
+StoreController --> ProductService
+StoreController --> CartService
+StoreController --> OrderService
+AdminController --> ProductService
+AdminController --> OrderService
+ProductService --> ProductRepository
+OrderService --> OrderRepository
+OrderService --> ProductRepository
+OrderService --> NotificationRepository
+OrderService --> PricingStrategy
+OrderService --> OrderFactory
+OrderService --> NotificationFactory
+PricingStrategy <|.. StandardPricingStrategy
+Order "1" *-- "*" OrderItem
+
+@enduml

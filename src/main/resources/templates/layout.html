@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockFlow</title>
+</head>
+<body>
+
+<!-- navbar fragment -->
+<nav th:fragment="navbar">
+    <div class="nav-container">
+        <a class="logo" href="/store">📦 StockFlow</a>
+        <div class="nav-menu">
+            <a class="nav-link" href="/store">Shop</a>
+            <th:block sec:authorize="isAuthenticated()">
+                <a class="nav-link" href="/orders">My Orders</a>
+            </th:block>
+            <th:block sec:authorize="hasRole('ADMIN')">
+                <a class="nav-link" href="/admin">Admin</a>
+            </th:block>
+            <th:block sec:authorize="isAnonymous()">
+                <a class="nav-link" href="/login">Login</a>
+                <a class="nav-link" href="/signup">Sign Up</a>
+            </th:block>
+            <th:block sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post" style="display:inline">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="btn btn-sm btn-secondary">Logout</button>
+                </form>
+            </th:block>
+            <a class="nav-link" href="/cart">
+                🛒 <span class="cart-badge" th:text="${cartSize != null ? cartSize : 0}">0</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- alerts fragment -->
+<div th:fragment="alerts">
+    <div class="alert alert-success"
+         th:if="${message != null and !#strings.isEmpty(message)}"
+         th:text="${message}"></div>
+    <div class="alert alert-error"
+         th:if="${error != null and !#strings.isEmpty(error)}"
+         th:text="${error}"></div>
+</div>
+
+</body>
+</html>

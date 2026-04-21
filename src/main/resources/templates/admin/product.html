@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StockFlow – Products</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="/store">📦 StockFlow</a>
+        <div class="nav-menu">
+            <a class="nav-link" href="/store">Shop</a>
+            <a class="nav-link" href="/orders">My Orders</a>
+            <a class="nav-link active" href="/admin">Admin</a>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="btn btn-sm btn-secondary">Logout</button>
+            </form>
+            <a class="nav-link" href="/cart">🛒 <span class="cart-badge">0</span></a>
+        </div>
+    </div>
+</nav>
+<main class="container">
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+    <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+    <h1 class="mb-3">Admin Panel</h1>
+    <div class="admin-layout">
+        <nav class="sidebar">
+            <a class="sidebar-link" href="/admin">📊 Dashboard</a>
+            <a class="sidebar-link active" href="/admin/products">📦 Products</a>
+            <a class="sidebar-link" href="/admin/orders">📋 Orders</a>
+            <a class="sidebar-link" href="/admin/notifications">🔔 Notifications</a>
+        </nav>
+        <div class="card">
+            <div class="flex" style="justify-content:space-between; align-items:center; margin-bottom:1.5rem">
+                <h2>📦 Manage Products</h2>
+                <button class="btn btn-primary" onclick="document.getElementById('productModal').classList.add('show')">➕ Add Product</button>
+            </div>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr><th>ID</th><th>Product</th><th>Price</th><th>Stock</th><th>Sales</th><th>Actions</th></tr></thead>
+                    <tbody>
+                        <tr th:each="p : ${products}">
+                            <td class="text-sm text-light" th:text="${p.id}">PRD-001</td>
+                            <td th:text="${p.icon + ' ' + p.name}">Product</td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(p.price,1,2)}">$0.00</td>
+                            <td><span class="badge" th:classappend="'badge-' + ${p.stockStatus}" th:text="${p.stock}">0</span></td>
+                            <td th:text="${p.sales}">0</td>
+                            <td>
+                                <a class="btn btn-primary btn-sm" th:href="@{/admin/products/edit/{id}(id=${p.id})}">Edit</a>
+                                <form th:action="@{/admin/products/delete/{id}(id=${p.id})}" method="post" style="display:inline"
+                                      onsubmit="return confirm('Delete this product?')">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(products)}">
+                            <td colspan="6" class="text-center text-light">No products found</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+
+<div class="modal-backdrop" id="productModal" th:classappend="${showModal} ? 'show'">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3 class="modal-title" th:text="${editingProduct != null} ? 'Edit Product' : 'Add Product'">Add Product</h3>
+            <button class="modal-close" onclick="document.getElementById('productModal').classList.remove('show')">×</button>
+        </div>
+        <form th:if="${editingProduct == null}" th:action="@{/admin/products/add}" method="post" th:object="${productForm}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div class="form-group">
+                <label class="form-label">Product Name</label>
+                <input type="text" th:field="*{name}" class="form-input" title="Product name" required/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Icon (emoji)</label>
+                <input type="text" th:field="*{icon}" class="form-input" placeholder="📦" title="Product icon emoji"/>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Price ($)</label>
+                <input type="number" step="0.01" th:field="*{price}" class="form-input" title="Product price" required/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">Stock</label>
+                <input type="number" th:field="*{stock}" class="form-input" title="Stock quantity" required/>
+                <div class="invalid-feedback" th:if="${#fields.hasErrors('stock')}" th:errors="*{stock}"></div>
+            </div>
+            <div class="flex gap-1">
+                <button type="submit" class="btn btn-primary">Save Product</button>
+                <button type="button" class="btn btn-secondary" onclick="document.getElementById('productModal').classList.remove('show')">Cancel</button>
+            </div>
+        </form>
+        <form th:if="${editingProduct != null}" th:action="@{/admin/products/edit/{id}(id=${editingProduct.id})}" method="post" th:object="${productForm}">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <div class="form-group">
+                <label class="form-label" th:for="*{name}">Product Name</label>
+                <input type="text" th:field="*{name}" class="form-input" title="Product name" required/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" th:for="*{price}">Price ($)</label>
+                <input type="number" step="0.01" th:field="*{price}" class="form-input" title="Product price" required/>
+            </div>
+            <div class="form-group">
+                <label class="form-label" th:for="*{stock}">Stock</label>
+                <input type="number" th:field="*{stock}" class="form-input" title="Stock quantity" required/>
+            </div>
+            <div class="flex gap-1">
+                <button type="submit" class="btn btn-primary">Update Product</button>
+                <a class="btn btn-secondary" href="/admin/products">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('productModal').addEventListener('click', function(e) {
+        if (e.target === this) this.classList.remove('show');
+    });
+</script>
+</body>
+</html>

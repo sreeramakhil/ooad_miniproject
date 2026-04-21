@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StockFlow – Login</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="/store">📦 StockFlow</a>
+        <div class="nav-menu">
+            <a class="nav-link" href="/store">Shop</a>
+            <a class="nav-link" href="/login" sec:authorize="isAnonymous()">Login</a>
+            <a class="nav-link" href="/signup" sec:authorize="isAnonymous()">Sign Up</a>
+            <a class="nav-link" href="/cart">🛒 <span class="cart-badge">0</span></a>
+        </div>
+    </div>
+</nav>
+<main class="container">
+    <div style="max-width:400px; margin:4rem auto">
+        <div class="card">
+            <h2 class="text-center mb-3" style="color:var(--primary); font-size:1.875rem">Login</h2>
+            <div class="alert alert-error"   th:if="${error}"   th:text="${error}"></div>
+            <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+            <form th:action="@{/login}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="form-group">
+                    <label class="form-label" for="username">Username</label>
+                    <input id="username" type="text" name="username" class="form-input" placeholder="Enter your username" required autofocus/>
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="password">Password</label>
+                    <input id="password" type="password" name="password" class="form-input" placeholder="Enter your password" required/>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+            </form>
+            <p class="text-center mt-2">Don't have an account? <a href="/signup">Sign Up</a></p>
+            <div class="alert alert-warning mt-2" style="font-size:0.85rem">
+                <strong>Demo:</strong> admin / password &nbsp;|&nbsp; user / password
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

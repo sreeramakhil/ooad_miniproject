@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StockFlow – My Orders</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="/store">📦 StockFlow</a>
+        <div class="nav-menu">
+            <a class="nav-link" href="/store">Shop</a>
+            <a class="nav-link" href="/orders">My Orders</a>
+            <a class="nav-link" href="/admin" sec:authorize="hasRole('ADMIN')">Admin</a>
+            <th:block sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post" style="display:inline">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="btn btn-sm btn-secondary">Logout</button>
+                </form>
+            </th:block>
+            <a class="nav-link" href="/cart">🛒 <span class="cart-badge" th:text="${cartSize != null ? cartSize : 0}">0</span></a>
+        </div>
+    </div>
+</nav>
+<main class="container">
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+    <h1 class="mb-3">📋 My Orders</h1>
+    <div class="empty-state" th:if="${#lists.isEmpty(orders)}">
+        <div class="empty-icon">📦</div>
+        <h3>No orders yet</h3>
+        <a class="btn btn-primary mt-2" href="/store">Browse Products</a>
+    </div>
+    <div th:each="order : ${orders}" class="order-card">
+        <div class="order-header">
+            <div>
+                <div class="font-bold" th:text="${order.id}">ORD-1001</div>
+                <div class="text-light text-sm" th:text="${order.date}">2024-01-01</div>
+            </div>
+            <span class="badge" th:classappend="'badge-' + ${order.cssStatus}" th:text="${order.status}">Processing</span>
+        </div>
+        <div th:each="item : ${order.items}" class="flex" style="justify-content:space-between; margin-bottom:0.5rem">
+            <span th:text="${item.icon + ' ' + item.productName + ' x ' + item.quantity}">Item x 1</span>
+            <span th:text="'$' + ${#numbers.formatDecimal(item.lineTotal,1,2)}">$0.00</span>
+        </div>
+        <div class="flex border-top font-bold" style="justify-content:space-between; padding-top:1rem; margin-top:1rem">
+            <span>Total:</span>
+            <span th:text="'$' + ${#numbers.formatDecimal(order.total,1,2)}">$0.00</span>
+        </div>
+    </div>
+</main>
+</body>
+</html>

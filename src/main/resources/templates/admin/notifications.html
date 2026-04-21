@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StockFlow – Notifications</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="/store">📦 StockFlow</a>
+        <div class="nav-menu">
+            <a class="nav-link" href="/store">Shop</a>
+            <a class="nav-link active" href="/admin">Admin</a>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="btn btn-sm btn-secondary">Logout</button>
+            </form>
+            <a class="nav-link" href="/cart">🛒 <span class="cart-badge">0</span></a>
+        </div>
+    </div>
+</nav>
+<main class="container">
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+    <h1 class="mb-3">Admin Panel</h1>
+    <div class="admin-layout">
+        <nav class="sidebar">
+            <a class="sidebar-link" href="/admin">📊 Dashboard</a>
+            <a class="sidebar-link" href="/admin/products">📦 Products</a>
+            <a class="sidebar-link" href="/admin/orders">📋 Orders</a>
+            <a class="sidebar-link active" href="/admin/notifications">🔔 Notifications</a>
+        </nav>
+        <div class="card">
+            <h2 class="mb-3">🔔 Order Notifications</h2>
+            <div class="empty-state" th:if="${#lists.isEmpty(notifications)}">
+                <div class="empty-icon">🔔</div>
+                <h3>No notifications yet</h3>
+            </div>
+            <div th:each="n : ${notifications}" class="order-card" th:classappend="${n.read} ? 'notif-read' : 'notif-unread'">
+                <div class="order-header">
+                    <div>
+                        <div class="font-bold" th:text="${(n.read ? '📭 ' : '📬 ') + 'Order: ' + n.orderId}">📬 Order</div>
+                        <div class="text-light text-sm" th:text="${n.date}">date</div>
+                    </div>
+                    <span class="badge" th:classappend="${n.read} ? 'badge-Delivered' : 'badge-Processing'"
+                          th:text="${n.read} ? 'Read' : 'New'">New</span>
+                </div>
+                <div class="mb-2">
+                    <div><strong>Customer:</strong> <span th:text="${n.customer}">user</span></div>
+                    <div><strong>Email:</strong> <span th:text="${n.userEmail}">email</span></div>
+                    <div><strong>Total:</strong> <span th:text="'$' + ${#numbers.formatDecimal(n.total,1,2)}">$0.00</span></div>
+                </div>
+                <pre style="font-family:inherit; font-size:0.9rem; white-space:pre-wrap; background:var(--bg-light); padding:0.75rem; border-radius:6px; margin-bottom:1rem"
+                     th:text="${n.itemsSummary}"></pre>
+                <form th:if="${!n.read}" th:action="@{/admin/notifications/{id}/read(id=${n.id})}" method="post" style="display:inline">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="btn btn-secondary btn-sm">✓ Mark as Read</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

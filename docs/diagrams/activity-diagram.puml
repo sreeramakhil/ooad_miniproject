@@ -1,0 +1,16 @@
+@startuml
+start
+:Customer adds products to cart;
+:System validates stock;
+if (Checkout requested?) then (yes)
+  :Calculate subtotal, tax, total;
+  :Create order using OrderFactory;
+  :Update product stock;
+  :Create admin notification;
+  :Save order and notification;
+  :Clear cart;
+else (no)
+  :Continue shopping;
+endif
+stop
+@enduml

@@ -1,0 +1,24 @@
+@startuml
+left to right direction
+
+actor Customer
+actor Admin
+
+rectangle StockFlow {
+  usecase "Browse Products" as UC1
+  usecase "Add To Cart" as UC2
+  usecase "Checkout" as UC3
+  usecase "View Orders" as UC4
+  usecase "Manage Products" as UC5
+  usecase "Track Orders" as UC6
+  usecase "Read Notifications" as UC7
+}
+
+Customer --> UC1
+Customer --> UC2
+Customer --> UC3
+Customer --> UC4
+Admin --> UC5
+Admin --> UC6
+Admin --> UC7
+@enduml

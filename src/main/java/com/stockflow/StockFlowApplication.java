@@ -1,0 +1,13 @@
+package com.stockflow;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class StockFlowApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(StockFlowApplication.class, args);
+        System.out.println("✅ StockFlow running at http://localhost:8080");
+    }
+}

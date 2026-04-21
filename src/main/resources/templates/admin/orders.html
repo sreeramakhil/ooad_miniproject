@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StockFlow – Orders</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <style>
+        .status-select {
+            padding: 0.4rem;
+            font-size: 0.85rem;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="/store">📦 StockFlow</a>
+        <div class="nav-menu">
+            <a class="nav-link" href="/store">Shop</a>
+            <a class="nav-link active" href="/admin">Admin</a>
+            <form th:action="@{/logout}" method="post" style="display:inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="btn btn-sm btn-secondary">Logout</button>
+            </form>
+            <a class="nav-link" href="/cart">🛒 <span class="cart-badge">0</span></a>
+        </div>
+    </div>
+</nav>
+<main class="container">
+    <div class="alert alert-success" th:if="${message}" th:text="${message}"></div>
+    <h1 class="mb-3">Admin Panel</h1>
+    <div class="admin-layout">
+        <nav class="sidebar">
+            <a class="sidebar-link" href="/admin">📊 Dashboard</a>
+            <a class="sidebar-link" href="/admin/products">📦 Products</a>
+            <a class="sidebar-link active" href="/admin/orders">📋 Orders</a>
+            <a class="sidebar-link" href="/admin/notifications">🔔 Notifications</a>
+        </nav>
+        <div class="card">
+            <h2 class="mb-3">📋 Manage Orders</h2>
+            <div style="overflow-x:auto">
+                <table>
+                    <thead><tr><th>Order ID</th><th>Customer</th><th>Date</th><th>Total</th><th>Status</th><th>Update</th></tr></thead>
+                    <tbody>
+                        <tr th:each="order : ${orders}">
+                            <td class="font-bold" th:text="${order.id}">ORD-1001</td>
+                            <td th:text="${order.customer}">user</td>
+                            <td class="text-sm" th:text="${order.date}">2024-01-01</td>
+                            <td th:text="'$' + ${#numbers.formatDecimal(order.total,1,2)}">$0.00</td>
+                            <td><span class="badge" th:classappend="'badge-' + ${order.cssStatus}" th:text="${order.status}">Processing</span></td>
+                            <td>
+                                <form th:action="@{/admin/orders/{id}/status(id=${order.id})}" method="post" class="flex gap-1">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                                    <select name="status" class="form-select status-select" title="Update order status">
+                                        <option th:each="s : ${statuses}" th:value="${s}" th:text="${s}" th:selected="${s == order.status}">Status</option>
+                                    </select>
+                                    <button type="submit" class="btn btn-primary btn-sm">Update</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(orders)}">
+                            <td colspan="6" class="text-center text-light">No orders yet</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+</html>

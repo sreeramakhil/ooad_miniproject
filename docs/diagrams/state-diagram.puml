@@ -1,0 +1,13 @@
+@startuml
+[*] --> Processing
+Processing --> Confirmed
+Confirmed --> Packed
+Packed --> Dispatched
+Dispatched --> Shipped
+Shipped --> "Out for Delivery"
+"Out for Delivery" --> Delivered
+Processing --> Cancelled
+Confirmed --> Cancelled
+Packed --> Cancelled
+Dispatched --> Cancelled
+@enduml

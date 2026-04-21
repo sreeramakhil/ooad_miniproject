@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StockFlow – Sign Up</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="/store">📦 StockFlow</a>
+        <div class="nav-menu">
+            <a class="nav-link" href="/store">Shop</a>
+            <a class="nav-link" href="/login">Login</a>
+            <a class="nav-link" href="/signup">Sign Up</a>
+            <a class="nav-link" href="/cart">🛒 <span class="cart-badge">0</span></a>
+        </div>
+    </div>
+</nav>
+<main class="container">
+    <div style="max-width:420px; margin:4rem auto">
+        <div class="card">
+            <h2 class="text-center mb-3" style="color:var(--primary); font-size:1.875rem">Create Account</h2>
+            <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+            <form th:action="@{/signup}" method="post" th:object="${signupForm}">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <div class="form-group">
+                    <label class="form-label">Username</label>
+                    <input type="text" th:field="*{username}" class="form-input"
+                           th:classappend="${#fields.hasErrors('username')} ? 'is-invalid'" title="Enter your username" required/>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" th:field="*{email}" class="form-input"
+                           th:classappend="${#fields.hasErrors('email')} ? 'is-invalid'" title="Enter your email address" required/>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" th:field="*{password}" class="form-input"
+                           th:classappend="${#fields.hasErrors('password')} ? 'is-invalid'" title="Enter your password" required/>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Role</label>
+                    <select th:field="*{role}" class="form-select" title="Select your role">
+                        <option value="">Select a role</option>
+                        <option value="user">User</option>
+                        <option value="admin">Administrator</option>
+                    </select>
+                    <div class="invalid-feedback" th:if="${#fields.hasErrors('role')}" th:errors="*{role}"></div>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Register</button>
+            </form>
+            <p class="text-center mt-2">Already have an account? <a href="/login">Log In</a></p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

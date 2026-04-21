@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StockFlow – Shop</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+
+<nav>
+    <div class="nav-container">
+        <a class="logo" href="/store">📦 StockFlow</a>
+        <div class="nav-menu">
+            <a class="nav-link" href="/store">Shop</a>
+            <a class="nav-link" href="/orders" sec:authorize="isAuthenticated()">My Orders</a>
+            <a class="nav-link" href="/admin" sec:authorize="hasRole('ADMIN')">Admin</a>
+            <a class="nav-link" href="/login" sec:authorize="isAnonymous()">Login</a>
+            <a class="nav-link" href="/signup" sec:authorize="isAnonymous()">Sign Up</a>
+            <th:block sec:authorize="isAuthenticated()">
+                <form th:action="@{/logout}" method="post" style="display:inline">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="btn btn-sm btn-secondary">Logout</button>
+                </form>
+            </th:block>
+            <a class="nav-link" href="/cart">
+                🛒 <span class="cart-badge" th:text="${cartSize != null ? cartSize : 0}">0</span>
+            </a>
+        </div>
+    </div>
+</nav>
+
+<main class="container">
+    <div class="alert alert-success"
+         th:if="${message != null and !#strings.isEmpty(message)}"
+         th:text="${message}"></div>
+    <div class="alert alert-error"
+         th:if="${error != null and !#strings.isEmpty(error)}"
+         th:text="${error}"></div>
+
+    <h1 class="text-center mb-2">Welcome to StockFlow Shop</h1>
+    <p class="text-center mb-3 text-light">Browse our latest tech gadgets</p>
+
+    <form method="get" th:action="@{/store}">
+        <input type="text" name="search" class="form-input"
+               placeholder="🔍 Search products..."
+               th:value="${search}"
+               style="margin-bottom:2rem"/>
+    </form>
+
+    <div class="products-grid" th:if="${products != null and !#lists.isEmpty(products)}">
+        <div class="product-card" th:each="p : ${products}">
+            <div class="product-icon" th:text="${p.icon}">📦</div>
+            <div class="product-name" th:text="${p.name}">Product</div>
+            <div class="product-price" th:text="'$' + ${#numbers.formatDecimal(p.price, 1, 2)}">$0.00</div>
+            <div class="mb-2">
+                <span class="badge"
+                      th:classappend="'badge-' + ${p.stockStatus}"
+                      th:text="${p.stockLabel}">In Stock</span>
+            </div>
+            <form th:if="${p.inStock}" th:action="@{/cart/add/{id}(id=${p.id})}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                <button type="submit" class="btn btn-primary btn-sm">🛒 Add to Cart</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="empty-state" th:if="${products == null or #lists.isEmpty(products)}">
+        <div class="empty-icon">📦</div>
+        <h3>No products found</h3>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+<div th:fragment="sidebar(activeTab)">
+    <nav class="sidebar">
+        <a class="sidebar-link"
+           th:classappend="${activeTab == 'dashboard'} ? 'active'"
+           href="/admin">📊 Dashboard</a>
+        <a class="sidebar-link"
+           th:classappend="${activeTab == 'products'} ? 'active'"
+           href="/admin/products">📦 Products</a>
+        <a class="sidebar-link"
+           th:classappend="${activeTab == 'orders'} ? 'active'"
+           href="/admin/orders">📋 Orders</a>
+        <a class="sidebar-link"
+           th:classappend="${activeTab == 'notifications'} ? 'active'"
+           href="/admin/notifications">🔔 Notifications</a>
+    </nav>
+</div>
+</body>
+</html>

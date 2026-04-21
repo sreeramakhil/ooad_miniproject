@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>StockFlow – Error</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+</head>
+<body>
+<div th:replace="~{layout :: navbar}"></div>
+
+<main class="container">
+    <div style="max-width:500px; margin:4rem auto; text-align:center">
+        <div style="font-size:5rem; margin-bottom:1rem">⚠️</div>
+        <h2 class="mb-2">Oops! Something went wrong</h2>
+        <div class="alert alert-error" th:if="${error}" th:text="${error}"></div>
+        <p class="text-light mb-3" th:if="${path}">
+            Path: <code th:text="${path}"></code>
+        </p>
+        <a class="btn btn-primary" href="/store">← Back to Shop</a>
+    </div>
+</main>
+</body>
+</html>
